@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Paid2Pick — Contests{% endblock %}
+{% block content %}
+  <div id="games">
+    <div class="title">Contests</div>
+    {% for c in contests %}
+      <div class="pickrow">
+        <div class="game"><a class="green" href="{% url 'contest_detail' c.id %}">{{ c.name }}</a>
+          <span class="meta">{{ c.starts_at|date:"m/d" }}–{{ c.ends_at|date:"m/d" }} · {{ c.contest_games.count }} games</span></div>
+        <div class="picker">{% if c.entry_fee %}{{ c.entry_fee }} coins{% else %}free{% endif %}
+          <span class="meta">pool: {{ c.prize_pool }}</span></div>
+        <div class="res">{{ c.get_status_display }}</div>
+        <div class="clear"></div>
+      </div>
+    {% empty %}
+      <p class="empty">No contests yet.</p>
+    {% endfor %}
+  </div>
+{% endblock %}

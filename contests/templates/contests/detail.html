@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Paid2Pick — {{ contest.name }}{% endblock %}
+{% block content %}
+  <div id="games">
+    <div class="title">{{ contest.name }}</div>
+    <div class="toolbar">
+      <span class="bal">{% if contest.entry_fee %}{{ contest.entry_fee }} coins{% else %}free{% endif %}
+        · pool {{ contest.prize_pool }} · {{ contest.get_status_display }}</span>
+      {% if user.is_authenticated and not entry and contest.is_open %}
+        <form method="post" action="{% url 'contest_enter' contest.id %}" class="inline" style="float:right">{% csrf_token %}
+          <button class="pick-btn">Enter</button></form>
+      {% elif entry %}
+        <span class="sortby green" style="float:right">Entered ✓</span>
+      {% endif %}
+    </div>
+
+    {% for g in games %}
+      <div class="pickrow">
+        <div class="game">{{ g.match.away }} @ {{ g.match.home }}
+          <span class="meta">{{ g.match.commence_time|date:"m/d g:i A" }}</span></div>
+        <div class="act">
+          {% for bt, label in g.options %}
+            {% if entry and contest.is_open %}
+              <form method="post" action="{% url 'contest_pick' contest.id %}" class="inline">{% csrf_token %}
+                <input type="hidden" name="match_id" value="{{ g.match.id }}" />
+                <input type="hidden" name="bet_type" value="{{ bt }}" />
+                <button class="pick-btn sm">{{ label }}</button>
+              </form>
+            {% else %}
+              <span class="opt">{{ label }}</span>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <div class="clear"></div>
+      </div>
+    {% endfor %}
+
+    <div class="title" style="margin-top:40px">Standings</div>
+    <div class="hot-head"><span class="u">Entrant</span><span class="n">Score</span><span class="n">Rank</span><span class="n">Payout</span></div>
+    {% for e in standings %}
+      <div class="hot-row"><span class="u">{{ e.user.username }}</span>
+        <span class="n">{{ e.score }}</span><span class="n">{{ e.rank|default:"—" }}</span>
+        <span class="n">{{ e.payout }}</span></div>
+    {% empty %}
+      <p class="empty">No entries yet.</p>
+    {% endfor %}
+  </div>
+{% endblock %}

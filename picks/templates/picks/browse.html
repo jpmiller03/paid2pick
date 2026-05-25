@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Paid2Pick — Buy Picks{% endblock %}
+{% block content %}
+  <div id="games">
+    <div class="title">Buy Picks</div>
+    <div class="toolbar">
+      {% if balance is not None %}<span class="bal">balance: <span class="green">{{ balance }}</span> coins</span>{% endif %}
+      <span class="sortby">sort:
+        {% for key, label in sorts.items %}
+          <a class="{% if key == sort %}green sel{% endif %}" href="?sort={{ key }}">{{ label }}</a>
+        {% endfor %}
+      </span>
+    </div>
+
+    {% for r in rows %}
+      <div class="pickrow">
+        <div class="picker">
+          <a class="green" href="{% url 'profile' r.pick.author.id %}">{{ r.pick.author.username }}</a>
+          <span class="meta">{{ r.win_pct }}% win · {{ r.accustat }} accustat</span>
+        </div>
+        <div class="game">{{ r.pick.match.away }} @ {{ r.pick.match.home }}
+          <span class="meta">{{ r.pick.match.commence_time|date:"m/d g:i A" }}</span></div>
+        <div class="mk" title="market">{{ r.pick.market_short }}{% if r.pick.comment %} <span title="includes analysis">★</span>{% endif %}</div>
+        <div class="act">
+          {% if r.owned %}
+            <span class="green">{{ r.pick.label }}</span>
+          {% else %}
+            <form method="post" action="{% url 'pick_buy' r.pick.id %}" class="inline">{% csrf_token %}
+              <button class="pick-btn">Buy · {{ price }}</button>
+            </form>
+          {% endif %}
+        </div>
+        <div class="clear"></div>
+      </div>
+    {% empty %}
+      <p class="empty">No picks available to buy right now. (Picks reveal free once a game locks.)</p>
+    {% endfor %}
+  </div>
+{% endblock %}

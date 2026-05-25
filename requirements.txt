@@ -1,0 +1,8 @@
+Django>=5.0
+requests>=2.31
+
+# production server + static + database
+gunicorn>=22.0
+whitenoise>=6.6
+dj-database-url>=2.1
+psycopg[binary]>=3.1

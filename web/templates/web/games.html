@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Paid2Pick — Games{% endblock %}
+{% block content %}
+  <div id="games">
+    <div class="title">Games</div>
+    {% for r in rows %}
+      <div class="item">
+        <div class="logos">
+          <div class="date">{{ r.date }} EST {% if r.locked %}<span class="lock">· locked</span>{% endif %}</div>
+          <a class="green" href="#">{{ r.away }}<br />{{ r.home }}</a>
+        </div>
+        <div class="bet">
+          <div class="label">line</div>
+          <div class="multiple"><a class="green" href="#">{{ r.away_rl }}&nbsp;<span class="x">({{ r.away_rl_x }})</span><br />
+            {{ r.home_rl }}&nbsp;<span class="x">({{ r.home_rl_x }})</span></a></div>
+        </div>
+        <div class="bet">
+          <div class="label">ml</div>
+          <div class="multiple"><a class="green" href="#">{{ r.away_ml }}<br />{{ r.home_ml }}</a></div>
+        </div>
+        <div class="bet">
+          <div class="label">o/u</div>
+          <div class="multiple"><a class="green" href="#">{{ r.ou }}</a><br /><span class="x">({{ r.ou_x }})</span></div>
+        </div>
+        <div class="bet">
+          <div class="label">Picks</div>
+          <div class="single"><a class="green" href="#">{{ r.n_picks }}</a></div>
+        </div>
+        <div class="pick">
+          {% if not user.is_authenticated %}<a class="pick-btn" href="{% url 'login' %}">PICK</a>
+          {% elif r.locked %}<span class="pick-btn off">locked</span>{% endif %}
+        </div>
+        <div class="clear"></div>
+        {% if r.mp_rows %}
+          <div class="makepick-wrap">make a pick:
+            {% include "picks/_makepick.html" with match=r.match mp_rows=r.mp_rows %}</div>
+        {% endif %}
+      </div>
+    {% empty %}
+      <p class="empty">No upcoming games. Run <code>manage.py fetch_odds</code> (or <code>seed_demo</code>).</p>
+    {% endfor %}
+  </div>
+
+  <div id="hotstreakers">
+    <div class="title">HotStreakers</div>
+    <div class="hot-head"><span class="u">Picker</span><span class="n">W-L</span><span class="n">Win%</span><span class="n">L7</span><span class="n">Accustat</span></div>
+    {% for s in leaders %}
+      <div class="hot-row">
+        <span class="u"><a class="green" href="{% url 'profile' s.user.id %}">{{ s.user.username }}</a></span>
+        <span class="n">{{ s.wins }}-{{ s.losses }}</span>
+        <span class="n">{{ s.win_pct }}%</span>
+        <span class="n">{{ s.win_pct_last7 }}%</span>
+        <span class="n">{{ s.accustat }}</span>
+      </div>
+    {% empty %}
+      <p class="empty">No settled picks yet. Run <code>seed_demo</code> then <code>settle</code>.</p>
+    {% endfor %}
+  </div>
+{% endblock %}

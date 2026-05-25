@@ -1,0 +1,42 @@
+[
+  {
+    "id": "sample-pit-tor", "sport_key": "baseball_mlb", "sport_title": "MLB",
+    "commence_time": "2026-05-24T23:07:00Z",
+    "home_team": "Toronto Blue Jays", "away_team": "Pittsburgh Pirates",
+    "bookmakers": [{"key": "draftkings", "title": "DraftKings", "markets": [
+      {"key": "h2h", "outcomes": [{"name": "Toronto Blue Jays", "price": -155}, {"name": "Pittsburgh Pirates", "price": 135}]},
+      {"key": "spreads", "outcomes": [{"name": "Toronto Blue Jays", "price": 125, "point": -1.5}, {"name": "Pittsburgh Pirates", "price": -145, "point": 1.5}]},
+      {"key": "totals", "outcomes": [{"name": "Over", "price": -105, "point": 8.5}, {"name": "Under", "price": -115, "point": 8.5}]}
+    ]}]
+  },
+  {
+    "id": "sample-det-bal", "sport_key": "baseball_mlb", "sport_title": "MLB",
+    "commence_time": "2026-05-24T22:35:00Z",
+    "home_team": "Baltimore Orioles", "away_team": "Detroit Tigers",
+    "bookmakers": [{"key": "draftkings", "title": "DraftKings", "markets": [
+      {"key": "h2h", "outcomes": [{"name": "Baltimore Orioles", "price": -120}, {"name": "Detroit Tigers", "price": 100}]},
+      {"key": "spreads", "outcomes": [{"name": "Baltimore Orioles", "price": 135, "point": -1.5}, {"name": "Detroit Tigers", "price": -155, "point": 1.5}]},
+      {"key": "totals", "outcomes": [{"name": "Over", "price": -110, "point": 9.0}, {"name": "Under", "price": -110, "point": 9.0}]}
+    ]}]
+  },
+  {
+    "id": "sample-nyy-bos", "sport_key": "baseball_mlb", "sport_title": "MLB",
+    "commence_time": "2026-05-24T23:10:00Z",
+    "home_team": "Boston Red Sox", "away_team": "New York Yankees",
+    "bookmakers": [{"key": "draftkings", "title": "DraftKings", "markets": [
+      {"key": "h2h", "outcomes": [{"name": "Boston Red Sox", "price": 110}, {"name": "New York Yankees", "price": -130}]},
+      {"key": "spreads", "outcomes": [{"name": "Boston Red Sox", "price": -135, "point": 1.5}, {"name": "New York Yankees", "price": 115, "point": -1.5}]},
+      {"key": "totals", "outcomes": [{"name": "Over", "price": -108, "point": 8.5}, {"name": "Under", "price": -112, "point": 8.5}]}
+    ]}]
+  },
+  {
+    "id": "sample-lad-sf", "sport_key": "baseball_mlb", "sport_title": "MLB",
+    "commence_time": "2026-05-25T02:15:00Z",
+    "home_team": "San Francisco Giants", "away_team": "Los Angeles Dodgers",
+    "bookmakers": [{"key": "draftkings", "title": "DraftKings", "markets": [
+      {"key": "h2h", "outcomes": [{"name": "San Francisco Giants", "price": 125}, {"name": "Los Angeles Dodgers", "price": -145}]},
+      {"key": "spreads", "outcomes": [{"name": "San Francisco Giants", "price": -140, "point": 1.5}, {"name": "Los Angeles Dodgers", "price": 120, "point": -1.5}]},
+      {"key": "totals", "outcomes": [{"name": "Over", "price": -115, "point": 7.5}, {"name": "Under", "price": -105, "point": 7.5}]}
+    ]}]
+  }
+]

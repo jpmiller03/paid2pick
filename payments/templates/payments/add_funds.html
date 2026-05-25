@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Paid2Pick — Add Coins{% endblock %}
+{% block content %}
+  <div id="games">
+    <div class="title">Add Coins</div>
+    <p class="meta">Balance: <span class="green">{{ coins }}</span> coins ·
+      provider: <b>{{ provider }}</b>{% if provider == "fake" %} (demo — credited instantly, no real charge){% endif %}</p>
+
+    <div class="toolbar">
+      <form method="post" action="{% url 'add_funds' %}" class="inline">{% csrf_token %}
+        <button class="pick-btn sm" name="amount_cents" value="500">+ $5</button>
+      </form>
+      <form method="post" action="{% url 'add_funds' %}" class="inline">{% csrf_token %}
+        <button class="pick-btn sm" name="amount_cents" value="1000">+ $10</button>
+      </form>
+      <form method="post" action="{% url 'add_funds' %}" class="inline">{% csrf_token %}
+        <button class="pick-btn sm" name="amount_cents" value="2500">+ $25</button>
+      </form>
+    </div>
+
+    <p class="meta" style="margin-top:24px">Real money is gated behind the Phase&nbsp;4
+      legal review. This page exercises the wallet <code>DEPOSIT</code> seam: a confirmed
+      deposit just credits coins — nothing else in the app changes.</p>
+  </div>
+{% endblock %}

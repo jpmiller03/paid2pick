@@ -1,0 +1,66 @@
+# Scheduled ingestion + settlement — the free alternative to Render cron.
+# Runs the same management commands against the production DATABASE_URL.
+#
+# CADENCE / COST:
+#   - cron is UTC, 5-min minimum granularity, and best-effort (runs can lag).
+#   - Actions minutes are FREE & UNLIMITED on PUBLIC repos. On a PRIVATE repo the
+#     Free plan gives ~2,000 min/month, so the */15 tick below would exceed it —
+#     make the repo public, or coarsen the tick to "*/30" or "*/45".
+#   - GitHub auto-disables scheduled workflows after 60 days with no repo commits;
+#     push or re-enable to keep it alive.
+#
+# Correctness note: pick locking / reveal is computed live from commence_time
+# (see Pick.is_buyable / is_revealed_to), so a delayed run never lets someone
+# pick or buy a started game. These jobs just keep status/scores/standings fresh.
+
+name: Scheduled jobs
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # tick: lock + scores + settle + contests
+    - cron: "17 */3 * * *"   # odds refresh, every 3h (offset minute)
+  workflow_dispatch: {}       # manual "Run workflow" button (also good for testing)
+
+concurrency:
+  group: p2p-cron
+  cancel-in-progress: false
+
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+  ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+  DJANGO_DEBUG: "0"
+  DJANGO_ALLOWED_HOSTS: "localhost"   # unused by mgmt commands; keeps settings happy
+
+jobs:
+  tick:
+    # frequent settlement loop (and any manual run)
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '*/15 * * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: lock / scores / settle
+        run: |
+          python manage.py lock_matches
+          python manage.py fetch_scores
+          python manage.py settle
+          python manage.py settle_contests
+
+  odds:
+    # refresh lines less often
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '17 */3 * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: fetch odds
+        run: python manage.py fetch_odds

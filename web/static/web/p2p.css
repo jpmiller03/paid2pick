@@ -1,0 +1,97 @@
+/* Ported from the legacy _layouts/css/style.css — the Cabin Sketch look. */
+body { font-family: 'Cabin Sketch', cursive; font-size: 16px; background: #fff; color: #000; margin: 0; }
+a { color: #000; text-decoration: none; }
+a:hover { color: #84B884; }
+.green, .green a { color: #84B884; }
+.wrap { width: 960px; margin: 0 auto; padding: 20px; }
+
+/* header / nav */
+#navbanner { background: #3f7d46; border-radius: 10px; padding: 14px 22px; display: flex;
+  align-items: center; justify-content: space-between; box-shadow: 0 0 10px #000; }
+#mainlogo { font-size: 40px; font-weight: 700; color: #fff; text-shadow: 1px 1px 1px #0a380e; }
+#mainlogo .p2 { color: #cfe9cf; }
+#navitems { list-style: none; margin: 0; padding: 0; }
+#navitems li { display: inline; margin-left: 26px; font-size: 26px; }
+#navitems li a { color: #fff; text-shadow: 1px 0 1px #0a380e; }
+#navitems li a:hover { color: #cfe9cf; }
+
+/* cards */
+#games, #hotstreakers { background: #F9F9F9; box-shadow: 0 0 10px #000; position: relative;
+  margin-top: 30px; padding: 55px 24px 24px; }
+.title { position: absolute; top: -22px; left: 18px; font-size: 40px; color: #84B884;
+  background: #fff; padding: 0 10px; border: 2px solid #000; border-radius: 8px; }
+.empty { color: #666; }
+code { background: #eee; padding: 1px 5px; border-radius: 4px; font-size: 13px; }
+
+/* games listing — mirrors site_games_item.html */
+#games { font-size: 20px; }
+#games .item { color: #84B884; padding: 16px 0; border-bottom: 1px dashed #cfcfcf; overflow: hidden; }
+#games .item .logos { float: left; width: 230px; text-align: center; padding-top: 30px; position: relative; }
+#games .logos .date { position: absolute; top: -2px; left: 0; width: 230px; text-align: center; color: #000; font-size: 15px; }
+#games .logos .lock { color: #b70b0b; }
+#games .item .bet { float: left; width: 115px; text-align: center; }
+#games .item .bet .label { padding-bottom: 10px; color: #000; }
+#games .item .bet .single { padding-top: 12px; }
+#games .item .bet .x { font-size: 11px; color: #000; }
+#games .item .pick { float: left; width: 120px; text-align: center; padding-top: 18px; }
+.pick-btn { display: inline-block; border: 3px solid #84B884; color: #84B884; border-radius: 14px; padding: 8px 22px; font-size: 22px; }
+.pick-btn:hover { background: #E7F6E7; }
+.pick-btn.off { border-color: #bbb; color: #bbb; }
+.clear { clear: both; }
+
+/* leaderboard */
+#hotstreakers { font-size: 20px; }
+.hot-head, .hot-row { display: flex; align-items: center; padding: 6px 0; }
+.hot-head { color: #000; border-bottom: 2px solid #000; font-size: 16px; }
+.hot-row { border-bottom: 1px dashed #cfcfcf; }
+.hot-head .u, .hot-row .u { flex: 1 1 auto; }
+.hot-head .n, .hot-row .n { width: 110px; text-align: center; }
+
+/* userbar / auth / messages */
+.userbar { text-align: right; font-size: 15px; padding: 8px 2px 0; }
+.inline { display: inline; }
+.linkbtn { background: none; border: none; font-family: inherit; font-size: 15px; color: #000; cursor: pointer; padding: 0; }
+.linkbtn:hover { color: #84B884; }
+.messages { margin-top: 14px; }
+.msg { border-radius: 6px; padding: 10px 14px; margin-bottom: 8px; font-size: 18px; }
+.msg.success { background: #d2ecba; color: #336801; }
+.msg.error { background: #f9c9c9; color: #8d0d0d; }
+.msg.info { background: #c3e6ff; color: #005898; }
+.authform p { margin: 10px 0; font-size: 18px; }
+.authform input { font-family: inherit; font-size: 18px; padding: 4px 6px; }
+
+/* marketplace rows */
+.toolbar { font-size: 16px; margin-bottom: 18px; color: #000; }
+.toolbar .sortby { float: right; }
+.toolbar .sortby a { margin-left: 10px; }
+.toolbar .bal { font-weight: 700; }
+.pickrow { padding: 14px 0; border-bottom: 1px dashed #cfcfcf; font-size: 19px; overflow: hidden; }
+.pickrow .picker { float: left; width: 260px; }
+.pickrow .game { float: left; width: 300px; }
+.pickrow .mk { float: left; width: 70px; text-align: center; color: #84B884; text-transform: uppercase; }
+.pickrow .act { float: right; }
+.pickrow .label { float: left; width: 360px; }
+.pickrow .res { float: right; }
+.pickrow .meta { display: block; font-size: 13px; color: #777; }
+.pickrow .note { font-size: 14px; color: #555; }
+.pick-win, .pick-win a { color: #2e7d32 !important; }
+.pick-loss, .pick-loss a { color: #b70b0b !important; }
+.pick-push, .pick-push a { color: #946b00 !important; }
+.pick-btn.sm { font-size: 14px; padding: 4px 10px; margin: 2px; border-width: 2px; }
+.opt { display: inline-block; font-size: 14px; color: #666; margin: 2px 6px; }
+
+/* make-a-pick widget (HTMX) */
+.makepick-wrap { clear: both; padding: 8px 0 2px; font-size: 14px; color: #777; }
+.makepick { display: inline; }
+.makepick .mpg { margin-right: 12px; white-space: nowrap; }
+
+/* generic card (profile) — same look as #games */
+.card { background: #F9F9F9; box-shadow: 0 0 10px #000; position: relative;
+  margin-top: 30px; padding: 55px 24px 24px; font-size: 19px; }
+.stats { padding: 6px 0; }
+.stats.sub { font-size: 16px; color: #444; }
+
+/* footer */
+#footer { font-size: 16px; margin-top: 24px; text-align: center; }
+#footer a { margin: 0 10px; }
+#footer a:hover { text-decoration: underline; }

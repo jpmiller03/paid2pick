@@ -1,0 +1,8 @@
+[
+  {"model": "catalog.sport", "pk": 1, "fields": {"odds_api_key": "baseball_mlb", "label": "MLB", "active": true}},
+  {"model": "catalog.sport", "pk": 2, "fields": {"odds_api_key": "americanfootball_nfl", "label": "NFL", "active": true}},
+  {"model": "catalog.sport", "pk": 3, "fields": {"odds_api_key": "basketball_nba", "label": "NBA", "active": true}},
+  {"model": "catalog.sport", "pk": 4, "fields": {"odds_api_key": "americanfootball_ncaaf", "label": "NCAA FB", "active": true}},
+  {"model": "catalog.sport", "pk": 5, "fields": {"odds_api_key": "basketball_ncaab", "label": "NCAA BB", "active": true}},
+  {"model": "catalog.sport", "pk": 6, "fields": {"odds_api_key": "icehockey_nhl", "label": "NHL", "active": true}}
+]

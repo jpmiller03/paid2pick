@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Paid2Pick — {{ picker.username }}{% endblock %}
+{% block content %}
+  <div id="profile-box" class="card">
+    <div class="title">{{ picker.username }}</div>
+    {% if overall %}
+      <div class="stats">
+        <b>Overall:</b> {{ overall.wins }}-{{ overall.losses }} ·
+        <span class="green">{{ overall.win_pct }}%</span> win ·
+        L7 {{ overall.win_pct_last7 }}% · accustat {{ overall.accustat }}
+      </div>
+      {% for s in by_sport %}
+        <div class="stats sub">{{ s.sport.label }}: {{ s.wins }}-{{ s.losses }}
+          · {{ s.win_pct }}% · accustat {{ s.accustat }}</div>
+      {% endfor %}
+    {% else %}
+      <p class="empty">No settled picks yet.</p>
+    {% endif %}
+
+    <div class="title" style="margin-top:36px">Recent picks</div>
+    {% for r in picks %}
+      <div class="pickrow">
+        <div class="game">{{ r.pick.match.away }} @ {{ r.pick.match.home }}
+          <span class="meta">{{ r.pick.match.commence_time|date:"m/d g:i A" }}</span></div>
+        <div class="mk">{{ r.pick.market_short }}</div>
+        <div class="act">
+          {% if r.revealed %}
+            <span class="pick-{{ r.pick.outcome }}">{{ r.pick.label }}{% if r.pick.outcome != 'pending' %} · {{ r.pick.get_outcome_display }}{% endif %}</span>
+          {% elif r.buyable and user.is_authenticated %}
+            <form method="post" action="{% url 'pick_buy' r.pick.id %}" class="inline">{% csrf_token %}
+              <button class="pick-btn sm">Buy · {{ price }}</button></form>
+          {% else %}
+            <span class="opt">🔒 hidden</span>
+          {% endif %}
+        </div>
+        <div class="clear"></div>
+      </div>
+    {% empty %}
+      <p class="empty">No picks yet.</p>
+    {% endfor %}
+  </div>
+{% endblock %}

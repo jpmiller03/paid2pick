@@ -1,0 +1,17 @@
+<div id="makepick-{{ match.id }}" class="makepick">
+  {% for g in mp_rows %}
+    <span class="mpg">
+      {% if g.picked %}
+        <b class="green">{{ g.picked.label }}</b>
+      {% else %}
+        {% for o in g.options %}
+          <button class="pick-btn sm"
+                  hx-post="{% url 'pick_make' %}"
+                  hx-target="#makepick-{{ match.id }}"
+                  hx-swap="outerHTML"
+                  hx-vals='{"match_id": {{ match.id }}, "bet_type": {{ o.bt }}}'>{{ o.label }}</button>
+        {% endfor %}
+      {% endif %}
+    </span>
+  {% endfor %}
+</div>

@@ -1,0 +1,26 @@
+# Render blueprint — free-tier friendly. Postgres is Neon (paste DATABASE_URL).
+# Scheduling is handled for free by .github/workflows/cron.yml (GitHub Actions).
+# (If you later upgrade Render, you can move the cron jobs here as `type: cron` services.)
+envVarGroups:
+  - name: paid2pick-env
+    envVars:
+      - key: DATABASE_URL          # Neon connection string (sslmode=require)
+        sync: false
+      - key: DJANGO_SECRET_KEY     # python -c "import secrets;print(secrets.token_urlsafe(50))"
+        sync: false
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_ALLOWED_HOSTS  # optional — Render's own *.onrender.com host is allowed automatically
+        sync: false
+      - key: ODDS_API_KEY          # optional — omit to run on the bundled sample
+        sync: false
+
+services:
+  - type: web
+    name: paid2pick
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt && python manage.py migrate --noinput && python manage.py collectstatic --noinput"
+    startCommand: "gunicorn paid2pick.wsgi --bind 0.0.0.0:$PORT --workers 3"
+    envVars:
+      - fromGroup: paid2pick-env

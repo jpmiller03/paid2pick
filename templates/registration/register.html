@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Paid2Pick — Register{% endblock %}
+{% block content %}
+  <div id="games">
+    <div class="title">Register</div>
+    <form method="post" class="authform">{% csrf_token %}
+      {{ form.as_p }}
+      <button class="pick-btn" type="submit">Create account</button>
+    </form>
+    <p class="meta">New accounts get a welcome coin balance to start buying picks.</p>
+  </div>
+{% endblock %}
