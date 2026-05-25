@@ -3,6 +3,14 @@
 {% block content %}
   <div id="games">
     <div class="title">Games</div>
+    {% if sport_chips %}
+      <div class="gamefilters">
+        <a class="{% if not selected_sport %}sel green{% endif %}" href="{% url 'games' %}">All</a>
+        {% for s in sport_chips %}
+          <a class="{% if selected_sport == s.category %}sel green{% endif %}" href="?sport={{ s.category }}">{{ s.label }}</a>
+        {% endfor %}
+      </div>
+    {% endif %}
     {% for r in rows %}
       <div class="item">
         <div class="logos">

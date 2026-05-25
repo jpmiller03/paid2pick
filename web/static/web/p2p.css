@@ -21,6 +21,9 @@ a:hover { color: #84B884; }
 .title { position: absolute; top: -22px; left: 18px; font-size: 40px; color: #84B884;
   background: #fff; padding: 0 10px; border: 2px solid #000; border-radius: 8px; }
 .empty { color: #666; }
+.gamefilters { font-size: 22px; margin-bottom: 18px; }
+.gamefilters a { margin-right: 16px; }
+.gamefilters a.sel { text-decoration: underline; }
 code { background: #eee; padding: 1px 5px; border-radius: 4px; font-size: 13px; }
 
 /* games listing — mirrors site_games_item.html */

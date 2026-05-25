@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.utils import timezone
 
 from accounts.models import PickerStats
-from catalog.models import Match
+from catalog.models import Match, Sport
 from picks.makepick import makepick_rows
 
 
@@ -26,14 +26,22 @@ def _plain(point):
 
 
 def games(request):
-    upcoming = (
+    base = (
         Match.objects
         .filter(status__in=[Match.Status.OPEN, Match.Status.LOCKED],
                 commence_time__gte=timezone.now())
-        .select_related("sport")
-        .annotate(n_picks=Count("picks"))
-        .order_by("commence_time")
     )
+
+    # Sport filter chips — only sports that actually have upcoming games.
+    present = base.values_list("sport__category", flat=True).distinct()
+    sport_chips = list(Sport.objects.filter(category__in=present).order_by("category"))
+    sel = request.GET.get("sport")
+    selected_sport = int(sel) if sel and sel.isdigit() else None
+
+    upcoming = base.select_related("sport").annotate(n_picks=Count("picks"))
+    if selected_sport:
+        upcoming = upcoming.filter(sport__category=selected_sport)
+    upcoming = upcoming.order_by("commence_time")
 
     rows = []
     for m in upcoming:
@@ -59,4 +67,7 @@ def games(request):
         .order_by("-win_pct", "-accustat")[:10]
     )
 
-    return render(request, "web/games.html", {"rows": rows, "leaders": leaders})
+    return render(request, "web/games.html", {
+        "rows": rows, "leaders": leaders,
+        "sport_chips": sport_chips, "selected_sport": selected_sport,
+    })
