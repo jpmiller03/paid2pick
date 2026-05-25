@@ -3,9 +3,24 @@
 {% block content %}
   <div id="games">
     <div class="title">My Picks</div>
-    <div class="toolbar"><span class="bal">balance: <span class="green">{{ balance }}</span> coins</span></div>
+    <div class="toolbar"><span class="bal">balance: <span class="green">{{ coins }}</span> coins</span></div>
 
-    {% for p in purchases %}
+    <h3 class="section">Picks I made</h3>
+    {% for p in made %}
+      <div class="pickrow">
+        <div class="game">{{ p.match.away }} @ {{ p.match.home }}
+          <span class="meta">{{ p.match.commence_time|date:"m/d g:i A" }}</span></div>
+        <div class="label pick-{{ p.outcome }}">{{ p.label }}
+          {% if p.comment %}<span class="note">— “{{ p.comment }}”</span>{% endif %}</div>
+        <div class="res">{{ p.get_outcome_display }}{% if p.is_buyable %} · for sale{% endif %}{% if p.sales %} · sold {{ p.sales }}×{% endif %}</div>
+        <div class="clear"></div>
+      </div>
+    {% empty %}
+      <p class="empty">You haven't made any picks yet. <a class="green" href="{% url 'games' %}">Make one →</a></p>
+    {% endfor %}
+
+    <h3 class="section">Picks I bought</h3>
+    {% for p in bought %}
       <div class="pickrow">
         <div class="game">{{ p.pick.match.away }} @ {{ p.pick.match.home }}
           <span class="meta">{{ p.pick.match.commence_time|date:"m/d g:i A" }}</span></div>

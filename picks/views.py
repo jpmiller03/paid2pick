@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
@@ -92,13 +93,20 @@ def pick_make(request):
 
 @login_required
 def purchases(request):
+    # Picks this user authored (with how many times each has sold).
+    made = (
+        Pick.objects
+        .filter(author=request.user)
+        .select_related("match", "match__sport")
+        .annotate(sales=Count("purchases",
+                              filter=Q(purchases__status=Purchase.Status.COMPLETED)))
+        .order_by("-created_at")[:50]
+    )
+    # Picks this user bought.
     bought = (
         Purchase.objects
         .filter(buyer=request.user, status=Purchase.Status.COMPLETED)
         .select_related("pick", "pick__match", "pick__author")
         .order_by("-created_at")
     )
-    return render(request, "picks/purchases.html", {
-        "purchases": bought,
-        "balance": get_wallet(request.user).balance,
-    })
+    return render(request, "picks/purchases.html", {"made": made, "bought": bought})

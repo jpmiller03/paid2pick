@@ -41,7 +41,16 @@ def games(request):
     upcoming = base.select_related("sport").annotate(n_picks=Count("picks"))
     if selected_sport:
         upcoming = upcoming.filter(sport__category=selected_sport)
-    upcoming = upcoming.order_by("commence_time")
+    upcoming = list(upcoming.order_by("commence_time"))
+
+    # Prefetch this user's picks for every visible game in ONE query (was N+1:
+    # the make-a-pick widget previously queried once per game).
+    my_picks = {}
+    if request.user.is_authenticated:
+        from picks.models import Pick
+        for p in Pick.objects.filter(author=request.user,
+                                     match__in=[m for m in upcoming if m.is_pickable]):
+            my_picks.setdefault(p.match_id, {})[p.market] = p
 
     rows = []
     for m in upcoming:
@@ -57,7 +66,8 @@ def games(request):
             "ou_x": f"{_am(m.over_extra)}/{_am(m.under_extra)}",
             "n_picks": m.n_picks,
             "locked": m.status == Match.Status.LOCKED,
-            "mp_rows": makepick_rows(request.user, m) if show_picker else None,
+            "mp_rows": (makepick_rows(request.user, m, my_picks.get(m.id, {}))
+                        if show_picker else None),
         })
 
     leaders = (

@@ -93,6 +93,7 @@ code { background: #eee; padding: 1px 5px; border-radius: 4px; font-size: 13px; 
   margin-top: 30px; padding: 55px 24px 24px; font-size: 19px; }
 .stats { padding: 6px 0; }
 .stats.sub { font-size: 16px; color: #444; }
+.section { font-size: 26px; color: #84B884; margin: 28px 0 10px; }
 
 /* footer */
 #footer { font-size: 16px; margin-top: 24px; text-align: center; }

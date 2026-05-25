@@ -5,11 +5,18 @@ from scoring import BetType
 from .models import Pick
 
 
-def makepick_rows(user, match):
-    """Per-market state: either the user's existing pick, or the two side options."""
-    existing = {}
-    if getattr(user, "is_authenticated", False):
-        existing = {p.market: p for p in Pick.objects.filter(author=user, match=match)}
+def makepick_rows(user, match, existing=None):
+    """Per-market state: either the user's existing pick, or the two side options.
+
+    Pass `existing` (a {market: Pick} dict, may be empty) to skip the per-match
+    query — the games view prefetches every visible match's picks in one query.
+    Leave it None (e.g. the single-match HTMX endpoint) to look it up here.
+    """
+    if existing is None:
+        existing = {}
+        if getattr(user, "is_authenticated", False):
+            existing = {p.market: p
+                        for p in Pick.objects.filter(author=user, match=match)}
 
     groups = [
         ("totals", [
