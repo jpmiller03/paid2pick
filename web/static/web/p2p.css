@@ -24,6 +24,8 @@ a:hover { color: #84B884; }
 .gamefilters { font-size: 22px; margin-bottom: 18px; }
 .gamefilters a { margin-right: 16px; }
 .gamefilters a.sel { text-decoration: underline; }
+.datedivider { clear: both; font-size: 22px; color: #84B884; border-bottom: 2px solid #84B884;
+  padding: 14px 0 4px; margin: 10px 0 4px; }
 code { background: #eee; padding: 1px 5px; border-radius: 4px; font-size: 13px; }
 
 /* games listing — mirrors site_games_item.html */

@@ -12,9 +12,10 @@
       </div>
     {% endif %}
     {% for r in rows %}
+      {% if r.date_header %}<div class="datedivider">{{ r.date_header }}</div>{% endif %}
       <div class="item">
         <div class="logos">
-          <div class="date">{{ r.date }} EST {% if r.locked %}<span class="lock">· locked</span>{% endif %}</div>
+          <div class="date">{{ r.time }} EST {% if r.locked %}<span class="lock">· locked</span>{% endif %}</div>
           <a class="green" href="#">{{ r.away }}<br />{{ r.home }}</a>
         </div>
         <div class="bet">

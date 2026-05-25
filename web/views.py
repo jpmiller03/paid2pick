@@ -53,11 +53,17 @@ def games(request):
             my_picks.setdefault(p.match_id, {})[p.market] = p
 
     rows = []
+    prev_day = None
     for m in upcoming:
+        local = timezone.localtime(m.commence_time)
+        day = local.date()
+        date_header = local.strftime("%A, %b ") + str(local.day) if day != prev_day else None
+        prev_day = day
         show_picker = request.user.is_authenticated and m.is_pickable
         rows.append({
             "match": m,
-            "date": timezone.localtime(m.commence_time).strftime("%m/%d %I:%M %p"),
+            "date_header": date_header,                       # set on first game of a new day
+            "time": local.strftime("%I:%M %p").lstrip("0"),
             "away": m.away, "home": m.home,
             "away_rl": _signed(m.away_rl), "away_rl_x": _am(m.away_rl_extra),
             "home_rl": _signed(m.home_rl), "home_rl_x": _am(m.home_rl_extra),
