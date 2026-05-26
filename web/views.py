@@ -62,6 +62,7 @@ def games(request):
         date_header = local.strftime("%A, %b ") + str(local.day) if day != prev_day else None
         prev_day = day
         show_picker = request.user.is_authenticated and m.is_pickable
+        mp = makepick_rows(request.user, m, my_picks.get(m.id, {})) if show_picker else None
         rows.append({
             "match": m,
             "date_header": date_header,                       # set on first game of a new day
@@ -74,8 +75,8 @@ def games(request):
             "ou_x": f"{_am(m.over_extra)}/{_am(m.under_extra)}",
             "n_picks": m.n_picks,
             "locked": m.status == Match.Status.LOCKED,
-            "mp_rows": (makepick_rows(request.user, m, my_picks.get(m.id, {}))
-                        if show_picker else None),
+            "mp_rows": mp,
+            "mp_open": any(not r["picked"] for r in mp) if mp else False,
         })
 
     leaders = (
@@ -109,6 +110,7 @@ def game_detail(request, pk):
         })
 
     show_picker = request.user.is_authenticated and m.is_pickable
+    mp = makepick_rows(request.user, m) if show_picker else None
     ctx = {
         "m": m,
         "final": m.status >= Match.Status.FINAL,
@@ -121,7 +123,8 @@ def game_detail(request, pk):
         },
         "picks": picks,
         "price": settings.PICK_PRICE,
-        "mp_rows": makepick_rows(request.user, m) if show_picker else None,
+        "mp_rows": mp,
+        "mp_open": any(not r["picked"] for r in mp) if mp else False,
     }
     template = ("web/_game_modal.html" if request.headers.get("HX-Request")
                 else "web/game_detail.html")

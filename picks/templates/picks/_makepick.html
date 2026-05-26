@@ -1,17 +1,17 @@
-<div id="makepick-{{ match.id }}" class="makepick">
+<form id="makepick-{{ match.id }}" class="makepick"
+      hx-post="{% url 'pick_make' %}" hx-target="#makepick-{{ match.id }}" hx-swap="outerHTML">
+  <input type="hidden" name="match_id" value="{{ match.id }}" />
   {% for g in mp_rows %}
-    <span class="mpg">
+    <div class="mprow">
+      <span class="mlabel">{{ g.market_label }}</span>
       {% if g.picked %}
-        <b class="green">{{ g.picked.label }}</b>
+        <b class="green">✓ {{ g.picked.label }}</b>
       {% else %}
         {% for o in g.options %}
-          <button class="pick-btn sm"
-                  hx-post="{% url 'pick_make' %}"
-                  hx-target="#makepick-{{ match.id }}"
-                  hx-swap="outerHTML"
-                  hx-vals='{"match_id": {{ match.id }}, "bet_type": {{ o.bt }}}'>{{ o.label }}</button>
+          <label class="mopt"><input type="radio" name="market_{{ g.market }}" value="{{ o.bt }}" /> {{ o.label }}</label>
         {% endfor %}
       {% endif %}
-    </span>
+    </div>
   {% endfor %}
-</div>
+  {% if any_open %}<button class="pick-btn sm" type="submit">Save picks</button>{% endif %}
+</form>

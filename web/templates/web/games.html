@@ -43,7 +43,7 @@
         <div class="clear"></div>
         {% if r.mp_rows %}
           <div class="makepick-wrap">make a pick:
-            {% include "picks/_makepick.html" with match=r.match mp_rows=r.mp_rows %}</div>
+            {% include "picks/_makepick.html" with match=r.match mp_rows=r.mp_rows any_open=r.mp_open %}</div>
         {% endif %}
       </div>
     {% empty %}

@@ -23,7 +23,7 @@
 </table>
 
 {% if mp_rows %}
-  <div class="makepick-wrap">make a pick: {% include "picks/_makepick.html" with match=m mp_rows=mp_rows %}</div>
+  <div class="makepick-wrap">make a pick: {% include "picks/_makepick.html" with match=m mp_rows=mp_rows any_open=mp_open %}</div>
 {% endif %}
 
 <h3 class="section">Picks on this game</h3>

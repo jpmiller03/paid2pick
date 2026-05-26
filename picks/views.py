@@ -79,16 +79,21 @@ def buy(request, pk):
 
 @login_required
 def pick_make(request):
-    """HTMX endpoint: create a pick, return the refreshed make-pick widget."""
+    """HTMX endpoint: save the selected pick(s) for a game (one per market that
+    has a radio chosen), then return the refreshed widget."""
     if request.method != "POST":
         return redirect("games")
     match = get_object_or_404(Match, pk=request.POST.get("match_id"))
-    try:
-        make_pick(request.user, match, int(request.POST.get("bet_type", 0)))
-    except (ValueError, TypeError):
-        pass  # re-render reflects current state (already picked / game closed)
+    for key, value in request.POST.items():
+        if key.startswith("market_") and value:
+            try:
+                make_pick(request.user, match, int(value))
+            except (ValueError, TypeError):
+                pass  # skip already-picked / closed / invalid
+    rows = makepick_rows(request.user, match)
+    any_open = any(not r["picked"] for r in rows)
     return render(request, "picks/_makepick.html",
-                  {"match": match, "mp_rows": makepick_rows(request.user, match)})
+                  {"match": match, "mp_rows": rows, "any_open": any_open})
 
 
 @login_required

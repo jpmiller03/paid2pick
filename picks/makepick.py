@@ -4,6 +4,8 @@ from scoring import BetType
 
 from .models import Pick
 
+_MARKET_LABEL = {"totals": "Total", "spread": "Spread", "moneyline": "Moneyline"}
+
 
 def makepick_rows(user, match, existing=None):
     """Per-market state: either the user's existing pick, or the two side options.
@@ -24,12 +26,12 @@ def makepick_rows(user, match, existing=None):
             (BetType.UNDER, f"Under {match.over_under:g}" if match.over_under is not None else None),
         ]),
         ("spread", [
-            (BetType.HOME_LINE, f"{match.home} {match.home_rl:+g}" if match.home_rl is not None else None),
             (BetType.AWAY_LINE, f"{match.away} {match.away_rl:+g}" if match.away_rl is not None else None),
+            (BetType.HOME_LINE, f"{match.home} {match.home_rl:+g}" if match.home_rl is not None else None),
         ]),
         ("moneyline", [
-            (BetType.HOME_ML, f"{match.home} ML" if match.home_ml is not None else None),
             (BetType.AWAY_ML, f"{match.away} ML" if match.away_ml is not None else None),
+            (BetType.HOME_ML, f"{match.home} ML" if match.home_ml is not None else None),
         ]),
     ]
 
@@ -37,6 +39,7 @@ def makepick_rows(user, match, existing=None):
     for market, opts in groups:
         rows.append({
             "market": market,
+            "market_label": _MARKET_LABEL[market],
             "picked": existing.get(market),
             "options": [{"bt": int(bt), "label": lbl} for bt, lbl in opts if lbl],
         })

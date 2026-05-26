@@ -85,10 +85,14 @@ code { background: #eee; padding: 1px 5px; border-radius: 4px; font-size: 13px; 
 .pick-btn.sm { font-size: 14px; padding: 4px 10px; margin: 2px; border-width: 2px; }
 .opt { display: inline-block; font-size: 14px; color: #666; margin: 2px 6px; }
 
-/* make-a-pick widget (HTMX) */
+/* make-a-pick widget (radios + Save) */
 .makepick-wrap { clear: both; padding: 8px 0 2px; font-size: 14px; color: #777; }
-.makepick { display: inline; }
-.makepick .mpg { margin-right: 12px; white-space: nowrap; }
+.makepick { margin-top: 4px; }
+.makepick .mprow { display: flex; align-items: center; gap: 12px; padding: 3px 0; font-size: 16px; }
+.makepick .mlabel { width: 86px; color: #555; flex: 0 0 auto; }
+.makepick .mopt { margin-right: 14px; cursor: pointer; white-space: nowrap; }
+.makepick .mopt input { vertical-align: middle; margin-right: 4px; }
+.makepick button { margin-top: 6px; }
 
 /* generic card (profile) — same look as #games */
 .card { background: #F9F9F9; box-shadow: 0 0 10px #000; position: relative;
