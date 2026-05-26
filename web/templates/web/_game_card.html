@@ -1,0 +1,46 @@
+{# Shared game content — used by the full page and the HTMX modal. #}
+<div class="gamehead">
+  <div class="teamcol">
+    {% if m.away_team.logo_url %}<img class="logo" src="{{ m.away_team.logo_url }}" alt="" />{% endif %}
+    <div class="tname">{{ m.away }}</div>
+    {% if m.away_team.record %}<div class="trec">{{ m.away_team.record }}{% if m.away_team.standing %} · {{ m.away_team.standing }}{% endif %}</div>{% endif %}
+  </div>
+  <div class="vs">@{% if final %}<div class="score">{{ m.away_score }}&ndash;{{ m.home_score }}</div><div class="finalflag">Final</div>{% endif %}</div>
+  <div class="teamcol">
+    {% if m.home_team.logo_url %}<img class="logo" src="{{ m.home_team.logo_url }}" alt="" />{% endif %}
+    <div class="tname">{{ m.home }}</div>
+    {% if m.home_team.record %}<div class="trec">{{ m.home_team.record }}{% if m.home_team.standing %} · {{ m.home_team.standing }}{% endif %}</div>{% endif %}
+  </div>
+</div>
+<div class="gamemeta">{{ m.sport.label }} &middot; {{ m.commence_time|date:"l, M j, g:i A" }} EST</div>
+
+<table class="linetable">
+  <tr><th></th><th>{{ m.away }}</th><th>{{ m.home }}</th></tr>
+  <tr><td>spread</td><td>{{ lines.away_rl }} <span class="x">({{ lines.away_rl_x }})</span></td>
+      <td>{{ lines.home_rl }} <span class="x">({{ lines.home_rl_x }})</span></td></tr>
+  <tr><td>money line</td><td>{{ lines.away_ml }}</td><td>{{ lines.home_ml }}</td></tr>
+  <tr><td>total</td><td colspan="2">O/U {{ lines.ou }} <span class="x">({{ lines.ou_x }})</span></td></tr>
+</table>
+
+{% if mp_rows %}
+  <div class="makepick-wrap">make a pick: {% include "picks/_makepick.html" with match=m mp_rows=mp_rows %}</div>
+{% endif %}
+
+<h3 class="section">Picks on this game</h3>
+{% for r in picks %}
+  <div class="pickrow">
+    <div class="picker"><a class="green" href="{% url 'profile' r.pick.author.id %}">{{ r.pick.author.username }}</a>
+      <span class="meta">{{ r.win_pct }}% win</span></div>
+    <div class="mk">{{ r.pick.market_short }}{% if r.pick.comment %} ★{% endif %}</div>
+    <div class="act">
+      {% if r.revealed %}<span class="pick-{{ r.pick.outcome }}">{{ r.pick.label }}</span>
+      {% elif r.buyable and user.is_authenticated %}
+        <form method="post" action="{% url 'pick_buy' r.pick.id %}" class="inline">{% csrf_token %}
+          <button class="pick-btn sm">Buy · {{ price }}</button></form>
+      {% else %}<span class="opt">🔒</span>{% endif %}
+    </div>
+    <div class="clear"></div>
+  </div>
+{% empty %}
+  <p class="empty">No picks on this game yet.</p>
+{% endfor %}

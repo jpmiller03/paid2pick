@@ -1,10 +1,12 @@
+from django.conf import settings
 from django.db.models import Count
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 
 from accounts.models import PickerStats
 from catalog.models import Match, Sport
 from picks.makepick import makepick_rows
+from picks.models import Pick
 
 
 def _am(price):
@@ -87,3 +89,40 @@ def games(request):
         "rows": rows, "leaders": leaders,
         "sport_chips": sport_chips, "selected_sport": selected_sport,
     })
+
+
+def game_detail(request, pk):
+    """Game page with team logos/records, lines, and the picks on it. Renders a
+    modal fragment for HTMX requests, the full page otherwise."""
+    m = get_object_or_404(
+        Match.objects.select_related("sport", "home_team", "away_team"), pk=pk)
+
+    overall = {s.user_id: s for s in PickerStats.objects.filter(sport__isnull=True)}
+    picks = []
+    for p in Pick.objects.filter(match=m).select_related("author").order_by("-created_at"):
+        stats = overall.get(p.author_id)
+        picks.append({
+            "pick": p,
+            "revealed": p.is_revealed_to(request.user),
+            "buyable": p.is_buyable,
+            "win_pct": stats.win_pct if stats else 0.0,
+        })
+
+    show_picker = request.user.is_authenticated and m.is_pickable
+    ctx = {
+        "m": m,
+        "final": m.status >= Match.Status.FINAL,
+        "lines": {
+            "ou": _plain(m.over_under),
+            "ou_x": f"{_am(m.over_extra)}/{_am(m.under_extra)}",
+            "away_rl": _signed(m.away_rl), "away_rl_x": _am(m.away_rl_extra),
+            "home_rl": _signed(m.home_rl), "home_rl_x": _am(m.home_rl_extra),
+            "away_ml": _am(m.away_ml), "home_ml": _am(m.home_ml),
+        },
+        "picks": picks,
+        "price": settings.PICK_PRICE,
+        "mp_rows": makepick_rows(request.user, m) if show_picker else None,
+    }
+    template = ("web/_game_modal.html" if request.headers.get("HX-Request")
+                else "web/game_detail.html")
+    return render(request, template, ctx)

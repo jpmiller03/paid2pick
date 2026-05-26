@@ -97,6 +97,31 @@ code { background: #eee; padding: 1px 5px; border-radius: 4px; font-size: 13px; 
 .stats.sub { font-size: 16px; color: #444; }
 .section { font-size: 26px; color: #84B884; margin: 28px 0 10px; }
 
+/* game detail */
+.gamehead { display: flex; align-items: flex-start; justify-content: space-between; text-align: center; }
+.gamehead .teamcol { flex: 1 1 0; }
+.gamehead .logo { width: 96px; height: 96px; object-fit: contain; }
+.gamehead .tname { font-size: 24px; }
+.gamehead .trec { font-size: 15px; color: #555; }
+.gamehead .vs { flex: 0 0 130px; font-size: 30px; padding-top: 30px; color: #84B884; }
+.gamehead .vs .score { font-size: 40px; color: #000; }
+.gamehead .vs .finalflag { font-size: 14px; color: #b70b0b; }
+.gamemeta { text-align: center; color: #555; font-size: 16px; margin: 6px 0 20px; }
+.linetable { width: 100%; border-collapse: collapse; font-size: 19px; margin-bottom: 10px; }
+.linetable th, .linetable td { border-bottom: 1px dashed #cfcfcf; padding: 8px 6px; text-align: center; }
+.linetable th { color: #000; }
+.linetable td:first-child { text-align: left; color: #555; }
+
+/* modal */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 9000;
+  display: flex; align-items: flex-start; justify-content: center; padding: 60px 16px; overflow-y: auto; }
+.modal-card { position: relative; background: #F9F9F9; box-shadow: 0 0 16px #000;
+  width: 720px; max-width: 100%; padding: 40px 28px 28px; border-radius: 6px;
+  font-family: 'Cabin Sketch', cursive; }
+.modal-close { position: absolute; top: 8px; right: 12px; background: none; border: none;
+  font-size: 34px; line-height: 1; cursor: pointer; color: #000; font-family: inherit; }
+.modal-close:hover { color: #84B884; }
+
 /* footer */
 #footer { font-size: 16px; margin-top: 24px; text-align: center; }
 #footer a { margin: 0 10px; }

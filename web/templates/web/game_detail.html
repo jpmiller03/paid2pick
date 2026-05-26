@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Paid2Pick — {{ m.away }} @ {{ m.home }}{% endblock %}
+{% block content %}
+  <div class="card" id="game">
+    <div class="title">Game</div>
+    {% include "web/_game_card.html" %}
+  </div>
+{% endblock %}

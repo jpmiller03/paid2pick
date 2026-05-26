@@ -48,6 +48,28 @@ class Command(BaseCommand):
                 external_id=m["external_id"], defaults=defaults)
             open_matches.append(match)
 
+        # Demo teams (logos + records) so the game page/modal looks real offline.
+        from catalog.models import Team
+        demo_teams = {
+            "Pittsburgh Pirates": ("PIT", "24-29", "4th in NL Central"),
+            "Toronto Blue Jays": ("TOR", "30-22", "2nd in AL East"),
+            "Detroit Tigers": ("DET", "28-24", "2nd in AL Central"),
+            "Baltimore Orioles": ("BAL", "27-25", "3rd in AL East"),
+            "New York Yankees": ("NYY", "33-19", "1st in AL East"),
+            "Boston Red Sox": ("BOS", "26-26", "4th in AL East"),
+            "Los Angeles Dodgers": ("LAD", "34-18", "1st in NL West"),
+            "San Francisco Giants": ("SF", "29-23", "2nd in NL West"),
+            "Chicago Cubs": ("CHC", "28-25", "2nd in NL Central"),
+            "St. Louis Cardinals": ("STL", "27-26", "3rd in NL Central"),
+        }
+        teams = {}
+        for name, (abbr, rec, standing) in demo_teams.items():
+            teams[name], _ = Team.objects.update_or_create(
+                sport=mlb, espn_id=abbr.lower(),
+                defaults=dict(name=name, abbreviation=abbr, record=rec,
+                              standing=standing,
+                              logo_url=f"https://a.espncdn.com/i/teamlogos/mlb/500/{abbr.lower()}.png"))
+
         for user, match, bt, comment in (
             (users["alice"], open_matches[0], BetType.OVER, "Both bats hot lately."),
             (users["bob"], open_matches[0], BetType.HOME_ML, ""),
@@ -93,6 +115,12 @@ class Command(BaseCommand):
         )
         for m in open_matches[:3]:
             ContestGame.objects.get_or_create(contest=contest, match=m)
+
+        # link every demo match to its teams (logos/records on the game page)
+        for match in [*open_matches, final]:
+            match.home_team = teams.get(match.home)
+            match.away_team = teams.get(match.away)
+            match.save(update_fields=["home_team", "away_team"])
 
         self.stdout.write(self.style.SUCCESS(
             "Seeded demo data.\n"

@@ -16,7 +16,8 @@
       <div class="item">
         <div class="logos">
           <div class="date">{{ r.time }} EST {% if r.locked %}<span class="lock">· locked</span>{% endif %}</div>
-          <a class="green" href="#">{{ r.away }}<br />{{ r.home }}</a>
+          <a class="green" href="{% url 'game_detail' r.match.id %}"
+             hx-get="{% url 'game_detail' r.match.id %}" hx-target="#modal" hx-swap="innerHTML">{{ r.away }}<br />{{ r.home }}</a>
         </div>
         <div class="bet">
           <div class="label">line</div>

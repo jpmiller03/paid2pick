@@ -19,6 +19,30 @@ class Sport(models.Model):
         return self.label
 
 
+class Team(models.Model):
+    """A team, enriched from ESPN (logo + cached record/standing). Matches link
+    to these via name resolution (the Odds API only gives us a name string)."""
+    sport = models.ForeignKey(Sport, on_delete=models.CASCADE, related_name="teams")
+    espn_id = models.CharField(max_length=16)
+    name = models.CharField(max_length=80)              # ESPN displayName
+    location = models.CharField(max_length=80, blank=True)
+    abbreviation = models.CharField(max_length=10, blank=True)
+    logo_url = models.URLField(blank=True)
+    record = models.CharField(max_length=20, blank=True)        # "29-24"
+    standing = models.CharField(max_length=60, blank=True)      # "3rd in NL West"
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["sport", "espn_id"],
+                                    name="uniq_sport_espn_team")
+        ]
+        indexes = [models.Index(fields=["sport", "name"])]
+
+    def __str__(self):
+        return self.name
+
+
 class Match(models.Model):
     class Status(models.IntegerChoices):
         OPEN = 0, "Open for picks"
@@ -30,6 +54,12 @@ class Match(models.Model):
     external_id = models.CharField(max_length=64, unique=True)  # Odds API event id
     home = models.CharField(max_length=80)
     away = models.CharField(max_length=80)
+    # resolved to ESPN-enriched Teams when possible (logos/records); display
+    # falls back to the `home`/`away` strings when unmatched.
+    home_team = models.ForeignKey(Team, null=True, blank=True,
+                                  on_delete=models.SET_NULL, related_name="+")
+    away_team = models.ForeignKey(Team, null=True, blank=True,
+                                  on_delete=models.SET_NULL, related_name="+")
     commence_time = models.DateTimeField(db_index=True)
     status = models.IntegerField(choices=Status, default=Status.OPEN, db_index=True)
 
