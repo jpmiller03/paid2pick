@@ -79,8 +79,9 @@ def buy(request, pk):
 
 @login_required
 def pick_make(request):
-    """HTMX endpoint: save the selected pick(s) for a game (one per market that
-    has a radio chosen), then return the refreshed widget."""
+    """Save the selected pick(s) for a game (one per market chosen). Returns the
+    refreshed widget for the modal's HTMX radio form; redirects back for the
+    games-list inline form (a normal POST)."""
     if request.method != "POST":
         return redirect("games")
     match = get_object_or_404(Match, pk=request.POST.get("match_id"))
@@ -90,10 +91,15 @@ def pick_make(request):
                 make_pick(request.user, match, int(value))
             except (ValueError, TypeError):
                 pass  # skip already-picked / closed / invalid
-    rows = makepick_rows(request.user, match)
-    any_open = any(not r["picked"] for r in rows)
-    return render(request, "picks/_makepick.html",
-                  {"match": match, "mp_rows": rows, "any_open": any_open})
+
+    if request.headers.get("HX-Request"):  # modal radio widget swaps in place
+        rows = makepick_rows(request.user, match)
+        any_open = any(not r["picked"] for r in rows)
+        return render(request, "picks/_makepick.html",
+                      {"match": match, "mp_rows": rows, "any_open": any_open})
+    # inline games-list form is a normal POST — reload the page we came from
+    messages.success(request, "Picks saved.")
+    return redirect(request.META.get("HTTP_REFERER") or "games")
 
 
 @login_required

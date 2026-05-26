@@ -13,39 +13,63 @@
     {% endif %}
     {% for r in rows %}
       {% if r.date_header %}<div class="datedivider">{{ r.date_header }}</div>{% endif %}
-      <div class="item">
-        <div class="logos">
-          <div class="date">{{ r.time }} EST {% if r.locked %}<span class="lock">· locked</span>{% endif %}</div>
-          <a class="green" href="{% url 'game_detail' r.match.id %}"
-             hx-get="{% url 'game_detail' r.match.id %}" hx-target="#modal" hx-swap="innerHTML">{{ r.away }}<br />{{ r.home }}</a>
+
+      {% if r.pickable %}
+        {# inline picking: the odds are the radio options; Save commits the row #}
+        <form class="item gameform" method="post" action="{% url 'pick_make' %}">{% csrf_token %}
+          <input type="hidden" name="match_id" value="{{ r.match.id }}" />
+          <div class="logos">
+            <div class="date">{{ r.time }} EST</div>
+            <a class="green" href="{% url 'game_detail' r.match.id %}"
+               hx-get="{% url 'game_detail' r.match.id %}" hx-target="#modal" hx-swap="innerHTML">{{ r.away }}<br />{{ r.home }}</a>
+          </div>
+          <div class="bet">
+            <div class="label">line</div>
+            <div class="multiple">
+              <label class="oddspick"><input type="radio" name="market_spread" value="4" {% if r.pick_bt.spread == 4 %}checked{% endif %}{% if r.pick_bt.spread %} disabled{% endif %} />{{ r.away_rl }} <span class="x">({{ r.away_rl_x }})</span></label>
+              <label class="oddspick"><input type="radio" name="market_spread" value="3" {% if r.pick_bt.spread == 3 %}checked{% endif %}{% if r.pick_bt.spread %} disabled{% endif %} />{{ r.home_rl }} <span class="x">({{ r.home_rl_x }})</span></label>
+            </div>
+          </div>
+          <div class="bet">
+            <div class="label">ml</div>
+            <div class="multiple">
+              <label class="oddspick"><input type="radio" name="market_moneyline" value="6" {% if r.pick_bt.moneyline == 6 %}checked{% endif %}{% if r.pick_bt.moneyline %} disabled{% endif %} />{{ r.away_ml }}</label>
+              <label class="oddspick"><input type="radio" name="market_moneyline" value="5" {% if r.pick_bt.moneyline == 5 %}checked{% endif %}{% if r.pick_bt.moneyline %} disabled{% endif %} />{{ r.home_ml }}</label>
+            </div>
+          </div>
+          <div class="bet">
+            <div class="label">o/u</div>
+            <div class="multiple">
+              <label class="oddspick"><input type="radio" name="market_totals" value="1" {% if r.pick_bt.totals == 1 %}checked{% endif %}{% if r.pick_bt.totals %} disabled{% endif %} />O {{ r.ou }} <span class="x">({{ r.over_x }})</span></label>
+              <label class="oddspick"><input type="radio" name="market_totals" value="2" {% if r.pick_bt.totals == 2 %}checked{% endif %}{% if r.pick_bt.totals %} disabled{% endif %} />U {{ r.ou }} <span class="x">({{ r.under_x }})</span></label>
+            </div>
+          </div>
+          <div class="bet"><div class="label">Picks</div><div class="single">{{ r.n_picks }}</div></div>
+          <div class="pick"><button class="pick-btn sm" type="submit">Save</button></div>
+          <div class="clear"></div>
+        </form>
+
+      {% else %}
+        <div class="item">
+          <div class="logos">
+            <div class="date">{{ r.time }} EST {% if r.locked %}<span class="lock">· locked</span>{% endif %}</div>
+            <a class="green" href="{% url 'game_detail' r.match.id %}"
+               hx-get="{% url 'game_detail' r.match.id %}" hx-target="#modal" hx-swap="innerHTML">{{ r.away }}<br />{{ r.home }}</a>
+          </div>
+          <div class="bet"><div class="label">line</div>
+            <div class="multiple">{{ r.away_rl }}&nbsp;<span class="x">({{ r.away_rl_x }})</span><br />{{ r.home_rl }}&nbsp;<span class="x">({{ r.home_rl_x }})</span></div></div>
+          <div class="bet"><div class="label">ml</div>
+            <div class="multiple">{{ r.away_ml }}<br />{{ r.home_ml }}</div></div>
+          <div class="bet"><div class="label">o/u</div>
+            <div class="multiple">{{ r.ou }}<br /><span class="x">({{ r.ou_x }})</span></div></div>
+          <div class="bet"><div class="label">Picks</div><div class="single">{{ r.n_picks }}</div></div>
+          <div class="pick">
+            {% if not user.is_authenticated %}<a class="pick-btn" href="{% url 'login' %}">PICK</a>
+            {% elif r.locked %}<span class="pick-btn off">locked</span>{% endif %}
+          </div>
+          <div class="clear"></div>
         </div>
-        <div class="bet">
-          <div class="label">line</div>
-          <div class="multiple"><a class="green" href="#">{{ r.away_rl }}&nbsp;<span class="x">({{ r.away_rl_x }})</span><br />
-            {{ r.home_rl }}&nbsp;<span class="x">({{ r.home_rl_x }})</span></a></div>
-        </div>
-        <div class="bet">
-          <div class="label">ml</div>
-          <div class="multiple"><a class="green" href="#">{{ r.away_ml }}<br />{{ r.home_ml }}</a></div>
-        </div>
-        <div class="bet">
-          <div class="label">o/u</div>
-          <div class="multiple"><a class="green" href="#">{{ r.ou }}</a><br /><span class="x">({{ r.ou_x }})</span></div>
-        </div>
-        <div class="bet">
-          <div class="label">Picks</div>
-          <div class="single"><a class="green" href="#">{{ r.n_picks }}</a></div>
-        </div>
-        <div class="pick">
-          {% if not user.is_authenticated %}<a class="pick-btn" href="{% url 'login' %}">PICK</a>
-          {% elif r.locked %}<span class="pick-btn off">locked</span>{% endif %}
-        </div>
-        <div class="clear"></div>
-        {% if r.mp_rows %}
-          <div class="makepick-wrap">make a pick:
-            {% include "picks/_makepick.html" with match=r.match mp_rows=r.mp_rows any_open=r.mp_open %}</div>
-        {% endif %}
-      </div>
+      {% endif %}
     {% empty %}
       <p class="empty">No upcoming games. Run <code>manage.py fetch_odds</code> (or <code>seed_demo</code>).</p>
     {% endfor %}

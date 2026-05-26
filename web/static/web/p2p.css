@@ -94,6 +94,14 @@ code { background: #eee; padding: 1px 5px; border-radius: 4px; font-size: 13px; 
 .makepick .mopt input { vertical-align: middle; margin-right: 4px; }
 .makepick button { margin-top: 6px; }
 
+/* inline odds picking (games list) */
+.gameform { margin: 0; }
+.oddspick { display: block; cursor: pointer; padding: 2px 4px; border-radius: 6px; line-height: 1.5; }
+.oddspick:hover { background: #E7F6E7; }
+.oddspick input { margin-right: 5px; vertical-align: middle; }
+.oddspick:has(input:checked) { background: #E7F6E7; color: #84B884; font-weight: 700; }
+.oddspick:has(input:disabled) { opacity: .75; cursor: default; }
+
 /* generic card (profile) — same look as #games */
 .card { background: #F9F9F9; box-shadow: 0 0 10px #000; position: relative;
   margin-top: 30px; padding: 55px 24px 24px; font-size: 19px; }
